@@ -1,0 +1,65 @@
+import React from "react";
+
+import getForm from "../utils/getForm";
+
+import BasicHoverButton from "../components/BasicHoverButton";
+import MainContainer from "../components/MainContainer";
+import FieldEditContainer from "../components/FieldEditContainer";
+
+import "semantic-ui-css/semantic.min.css";
+import { Form, Grid } from "semantic-ui-react";
+
+//QUESTION: what is a good way of handling these repetitive db lookups? Should the data access be in the util function?
+// Should it resolve references? If so, how far?
+
+class FormBuilder extends React.Component {
+  static async getInitialProps({ query }) {
+    const formDoc = await getForm(query.id);
+    const form = formDoc.data();
+    const fieldsRef = await form.fields.get();
+    const fields = Object.values(fieldsRef.data());
+    return { displayName: form.displayName, fields };
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return (
+      <>
+        <MainContainer>
+          <Grid centered textAlign="center">
+            <Grid.Row only="tablet computer">
+              <div className="desktopPadding" />
+            </Grid.Row>
+            <Grid.Row>
+              <div className="bigButton">
+                <BasicHoverButton
+                  basicInverted
+                  loading={this.state.isCreating}
+                  size="massive"
+                  color="black"
+                  onClick={() => this.newOrg()}
+                >
+                  New Field
+                </BasicHoverButton>
+              </div>
+            </Grid.Row>
+
+            {this.props.fields.map(fieldData => {
+              return (
+                <Grid.Row>
+                  <FieldEditContainer fieldData={fieldData} />
+                </Grid.Row>
+              );
+            })}
+          </Grid>
+        </MainContainer>
+        <style jsx>{``}</style>
+      </>
+    );
+  }
+}
+export default FormBuilder;
