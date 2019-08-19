@@ -18,10 +18,6 @@ class FieldEditContainer extends React.Component {
     }
   }
 
-  handleEditClick(val) {
-    this.setState({ isEditing: val });
-  }
-
   render() {
     const PreviewField = this.previewField(this.props.type).preview;
     const EditField = this.previewField(this.props.type).edit;
@@ -34,11 +30,7 @@ class FieldEditContainer extends React.Component {
         </Grid.Column>
         <Grid.Column>
           <Form>
-            <EditField
-              {...this.props}
-              {...this.state}
-              handleEditClick={val => this.handleEditClick(val)}
-            />
+            <EditField {...this.props} {...this.state} />
           </Form>
         </Grid.Column>
       </Grid>

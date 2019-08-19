@@ -17,7 +17,7 @@ const TextInput = props => {
     props.onChange ? props.onChange(e) : null;
     e.target.value ? setIsChanged(true) : setIsChanged(false);
   };
-
+  console.log("input", props);
   return (
     <>
       {isChanged || props.isEditing ? (

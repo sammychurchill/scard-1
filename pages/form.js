@@ -14,17 +14,21 @@ class FormBuilder extends React.Component {
     const formDoc = await getForm(query.id);
     const form = formDoc.data();
     const fieldsRef = await form.fields.get();
-    const fields = Object.values(fieldsRef.data());
+    const fields = fieldsRef.data();
     return { displayName: form.displayName, fields };
   }
 
   constructor(props) {
     super(props);
-    this.state = { fields: props.fields };
+    this.state = {};
   }
 
   handleSaveClick(data) {
     console.log("data", data);
+  }
+
+  handleEditClick(val) {
+    this.setState({ isEditing: val });
   }
 
   handleFieldChange(idx, fieldName, value) {
@@ -35,6 +39,7 @@ class FormBuilder extends React.Component {
   }
 
   render() {
+    const fields = Object.values(this.props.fields);
     return (
       <>
         <Grid centered textAlign="center">
@@ -54,7 +59,7 @@ class FormBuilder extends React.Component {
               New Field
             </BasicHoverButton>
           </Grid.Row>
-          {this.state.fields.map((fieldData, idx) => {
+          {fields.map((fieldData, idx) => {
             return (
               <Grid.Row>
                 <FieldEditContainer
@@ -62,6 +67,7 @@ class FormBuilder extends React.Component {
                   handleFieldChange={(fieldName, value) =>
                     this.handleFieldChange(idx, fieldName, value)
                   }
+                  handleEditClick={val => this.handleEditClick(val)}
                   handleSaveClick={data => this.handleSaveClick(data)}
                 />
               </Grid.Row>
