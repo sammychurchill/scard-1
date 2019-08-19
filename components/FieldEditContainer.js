@@ -2,12 +2,19 @@ import React from "react";
 import FieldEmail from "./FieldEmail";
 import FieldText from "./FieldText";
 import ConfigureEmail from "./ConfigureEmail";
-import { Form, Grid, Image, Segment, Transition } from "semantic-ui-react";
+import {
+  Form,
+  Grid,
+  Image,
+  Segment,
+  Transition,
+  Container
+} from "semantic-ui-react";
 
 class FieldEditContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { item: null, visible: false, editing: false };
+    this.state = { item: null };
   }
 
   componentDidMount() {
@@ -16,9 +23,9 @@ class FieldEditContainer extends React.Component {
   }
 
   setItem() {
-    const fieldData = this.props.fieldData;
+    console.log("test");
     let item;
-    switch (fieldData.type) {
+    switch (this.props.type) {
       case "text": //TODO: Use types
         item = <FieldText {...this.props} />;
         break;
@@ -34,6 +41,7 @@ class FieldEditContainer extends React.Component {
   }
 
   render() {
+    console.log("edit contatiner", this.props);
     return (
       <Grid columns={2}>
         <Grid.Column>

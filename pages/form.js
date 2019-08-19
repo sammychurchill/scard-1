@@ -23,40 +23,55 @@ class FormBuilder extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { fields: props.fields };
+  }
+
+  handleSaveClick(data) {
+    console.log("data", data);
+  }
+
+  handleFieldChange(idx, fieldName, value) {
+    let fields = [...this.state.fields];
+    let fieldData = { ...fields[idx], [fieldName]: value };
+    fields[idx] = fieldData;
+    this.setState({ fields });
   }
 
   render() {
+    console.log("state", this.state);
     return (
       <>
-        <MainContainer>
-          <Grid centered textAlign="center">
-            <Grid.Row only="tablet computer">
-              <div className="desktopPadding" />
-            </Grid.Row>
-            <Grid.Row>
-              <div className="bigButton">
-                <BasicHoverButton
-                  basicInverted
-                  loading={this.state.isCreating}
-                  size="massive"
-                  color="black"
-                  onClick={() => this.newOrg()}
-                >
-                  New Field
-                </BasicHoverButton>
-              </div>
-            </Grid.Row>
-
-            {this.props.fields.map(fieldData => {
-              return (
-                <Grid.Row>
-                  <FieldEditContainer fieldData={fieldData} />
-                </Grid.Row>
-              );
-            })}
-          </Grid>
-        </MainContainer>
+        <Grid centered textAlign="center">
+          <Grid.Row only="tablet computer">
+            <div className="desktopPadding" />
+          </Grid.Row>
+          <Grid.Row>
+            <div className="bigButton">
+              <BasicHoverButton
+                basicInverted
+                loading={this.state.isCreating}
+                size="massive"
+                color="black"
+                onClick={() => this.newOrg()}
+              >
+                New Field
+              </BasicHoverButton>
+            </div>
+          </Grid.Row>
+          {this.state.fields.map((fieldData, idx) => {
+            return (
+              <Grid.Row>
+                <FieldEditContainer
+                  {...fieldData}
+                  handleFieldChange={(fieldName, value) =>
+                    this.handleFieldChange(idx, fieldName, value)
+                  }
+                  handleSaveClick={data => this.handleSaveClick(data)}
+                />
+              </Grid.Row>
+            );
+          })}
+        </Grid>
         <style jsx>{``}</style>
       </>
     );
