@@ -46,17 +46,17 @@ class FormBuilder extends React.Component {
             <div className="desktopPadding" />
           </Grid.Row>
           <Grid.Row>
-            <div className="bigButton">
-              <BasicHoverButton
-                basicInverted
-                loading={this.state.isCreating}
-                size="massive"
-                color="black"
-                onClick={() => this.newOrg()}
-              >
-                New Field
-              </BasicHoverButton>
-            </div>
+            <BasicHoverButton // Should this create a new row in the database
+              // or should it create an empty field that on save creates a new row in the database
+              // If it creates an empty field, how does the database client know to update some but create a new one
+              basicInverted
+              loading={this.state.isCreating}
+              size="massive"
+              color="black"
+              onClick={() => this.newOrg()}
+            >
+              New Field
+            </BasicHoverButton>
           </Grid.Row>
           {this.state.fields.map((fieldData, idx) => {
             return (

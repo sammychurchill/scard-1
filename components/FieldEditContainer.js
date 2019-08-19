@@ -2,14 +2,7 @@ import React from "react";
 import FieldEmail from "./FieldEmail";
 import FieldText from "./FieldText";
 import ConfigureEmail from "./ConfigureEmail";
-import {
-  Form,
-  Grid,
-  Image,
-  Segment,
-  Transition,
-  Container
-} from "semantic-ui-react";
+import { Form, Grid } from "semantic-ui-react";
 
 class FieldEditContainer extends React.Component {
   constructor(props) {
@@ -45,7 +38,10 @@ class FieldEditContainer extends React.Component {
     return (
       <Grid columns={2}>
         <Grid.Column>
-          <Form>{this.state.item}</Form>
+          {/* <Form>{this.state.item}</Form> */}
+          <Form>
+            <FieldEmail {...this.props} />
+          </Form>
         </Grid.Column>
         <Grid.Column>
           <Form>
