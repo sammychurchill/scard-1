@@ -14,8 +14,6 @@ const FieldEmail = props => {
     emailValidation(eventData) ? setError(false) : setError(true);
   };
 
-  console.log("email props", props);
-
   return (
     <Form.Field error={error}>
       <InputText

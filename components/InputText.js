@@ -20,7 +20,11 @@ const TextInput = props => {
 
   return (
     <>
-      {isChanged ? <label>{props.label}</label> : <label>&nbsp;</label>}
+      {isChanged || props.isEditing ? (
+        <label>{props.label}</label>
+      ) : (
+        <label>&nbsp;</label>
+      )}
       <Input
         label={props.required ? { icon: "asterisk" } : null}
         labelPosition="right corner"
@@ -32,10 +36,10 @@ const TextInput = props => {
         onChange={e => handleOnChange(e)}
       />
 
-      <Message hidden={!props.error} negative={props.error} size="mini">
+      <Message visible={props.error || props.isEditing} negative size="mini">
         {props.errorText}
       </Message>
-      <Message hidden={!isFocused} size="mini">
+      <Message visible={props.isEditing} hidden={!isFocused} size="mini">
         {props.helperText}
       </Message>
     </>

@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { Form, Input, Transition, Button } from "semantic-ui-react";
 
 export default function ConfigureEmail(props) {
-  const [isEditing, setIsEditing] = useState(false);
-
   const handleSaveClick = () => {
     props.handleSaveClick(props);
-    setIsEditing(false);
+    props.handleEditClick(false);
   };
 
   return (
@@ -16,7 +14,7 @@ export default function ConfigureEmail(props) {
           <label>Field Name</label>
           <Form.Input
             id="name"
-            readOnly={!isEditing}
+            readOnly={!props.isEditing}
             placeholder="Name"
             value={props.name}
             onChange={e => props.handleChange(e)}
@@ -25,24 +23,24 @@ export default function ConfigureEmail(props) {
         <Form.Field>
           <label>&nbsp;</label>
           <Transition.Group>
-            {isEditing ? (
+            {props.isEditing ? (
               <>
                 <Button onClick={() => handleSaveClick()} color="green">
                   Save
                 </Button>
-                <Button onClick={() => setIsEditing(false)} basic>
+                <Button onClick={() => props.handleEditClick(false)} basic>
                   Cancel
                 </Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)} basic>
+              <Button onClick={() => props.handleEditClick(true)} basic>
                 Edit
               </Button>
             )}
           </Transition.Group>
         </Form.Field>
       </Form.Group>
-      {!isEditing ? null : (
+      {!props.isEditing ? null : (
         <>
           <Form.Field>
             <label>Label</label>

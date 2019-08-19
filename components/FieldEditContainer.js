@@ -5,18 +5,7 @@ import ConfigureEmail from "./ConfigureEmail";
 import { Form, Grid } from "semantic-ui-react";
 
 class FieldEditContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { item: null };
-  }
-
-  componentDidMount() {
-    const item = this.setItem();
-    this.setState({ item });
-  }
-
   setItem() {
-    console.log("test");
     let item;
     switch (this.props.type) {
       case "text": //TODO: Use types
@@ -33,19 +22,24 @@ class FieldEditContainer extends React.Component {
     return item;
   }
 
+  handleEditClick(val) {
+    this.setState({ isEditing: val });
+  }
+
   render() {
-    console.log("edit contatiner", this.props);
+    const item = this.setItem();
     return (
       <Grid columns={2}>
         <Grid.Column>
-          {/* <Form>{this.state.item}</Form> */}
-          <Form>
-            <FieldEmail {...this.props} />
-          </Form>
+          <Form>{item}</Form>
         </Grid.Column>
         <Grid.Column>
           <Form>
-            <ConfigureEmail {...this.props} />
+            <ConfigureEmail
+              {...this.props}
+              {...this.state}
+              handleEditClick={val => this.handleEditClick(val)}
+            />
           </Form>
         </Grid.Column>
       </Grid>
