@@ -36,10 +36,10 @@ const TextInput = props => {
         onChange={e => handleOnChange(e)}
       />
 
-      <Message visible={props.error || props.isEditing} negative size="mini">
+      <Message visible={props.error} negative size="mini">
         {props.errorText}
       </Message>
-      <Message visible={props.isEditing} hidden={!isFocused} size="mini">
+      <Message visible={props.isEditing} size="mini">
         {props.helperText}
       </Message>
     </>

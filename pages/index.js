@@ -1,9 +1,6 @@
-import Router from "next/router";
 import Link from "next/link";
 import React from "react";
-import uuid from "uuid";
 
-import { loadDB } from "../firebase";
 import getOrgs from "../utils/getOrgs";
 import BasicHoverButton from "../components/BasicHoverButton";
 import MainContainer from "../components/MainContainer";

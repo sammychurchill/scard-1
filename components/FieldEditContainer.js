@@ -28,7 +28,9 @@ class FieldEditContainer extends React.Component {
     return (
       <Grid columns={2}>
         <Grid.Column>
-          <Form>{<PreviewField {...this.props} />}</Form>
+          <Form>
+            <PreviewField {...this.props} />
+          </Form>
         </Grid.Column>
         <Grid.Column>
           <Form>
