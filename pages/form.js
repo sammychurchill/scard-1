@@ -9,9 +9,6 @@ import FieldEditContainer from "../components/FieldEditContainer";
 import "semantic-ui-css/semantic.min.css";
 import { Form, Grid } from "semantic-ui-react";
 
-//QUESTION: what is a good way of handling these repetitive db lookups? Should the data access be in the util function?
-// Should it resolve references? If so, how far?
-
 class FormBuilder extends React.Component {
   static async getInitialProps({ query }) {
     const formDoc = await getForm(query.id);
@@ -38,7 +35,6 @@ class FormBuilder extends React.Component {
   }
 
   render() {
-    console.log("state", this.state);
     return (
       <>
         <Grid centered textAlign="center">

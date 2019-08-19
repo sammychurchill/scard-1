@@ -5,21 +5,17 @@ import ConfigureEmail from "./ConfigureEmail";
 import { Form, Grid } from "semantic-ui-react";
 
 class FieldEditContainer extends React.Component {
-  setItem() {
-    let item;
-    switch (this.props.type) {
+  setItem(fieldType) {
+    switch (fieldType) {
       case "text": //TODO: Use types
-        item = <FieldText {...this.props} />;
-        break;
+        return FieldText;
 
-      case "email": //TODO: Use types
-        item = <FieldEmail {...this.props} />;
-        break;
+      case "email":
+        return FieldEmail;
 
       default:
-        break;
+        throw new Error("Unrecognised field type");
     }
-    return item;
   }
 
   handleEditClick(val) {
@@ -27,11 +23,11 @@ class FieldEditContainer extends React.Component {
   }
 
   render() {
-    const item = this.setItem();
+    const Field = this.setItem(this.props.type);
     return (
       <Grid columns={2}>
         <Grid.Column>
-          <Form>{item}</Form>
+          <Form>{<Field {...this.props} />}</Form>
         </Grid.Column>
         <Grid.Column>
           <Form>
