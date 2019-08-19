@@ -11,7 +11,7 @@ class FieldEditContainer extends React.Component {
         return { preview: FieldText, edit: ConfigureEmail };
 
       case "email":
-        return { preview: FieldText, edit: ConfigureEmail };
+        return { preview: FieldEmail, edit: ConfigureEmail };
 
       default:
         throw new Error("Unrecognised field type");
