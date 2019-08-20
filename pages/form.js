@@ -1,47 +1,95 @@
 import React from "react";
 
 import getForm from "../utils/getForm";
+import setField from "../utils/setField";
 
 import BasicHoverButton from "../components/BasicHoverButton";
-import MainContainer from "../components/MainContainer";
 import FieldEditContainer from "../components/FieldEditContainer";
 
 import "semantic-ui-css/semantic.min.css";
-import { Form, Grid } from "semantic-ui-react";
+import {
+  Form,
+  Grid,
+  Transition,
+  Segment,
+  Dropdown,
+  Container,
+  Input
+} from "semantic-ui-react";
+
+const fieldTypes = [
+  {
+    key: "Name",
+    text: "Name",
+    value: "Name"
+  },
+  {
+    key: "Email",
+    text: "Email",
+    value: "Email"
+  }
+];
 
 class FormBuilder extends React.Component {
   static async getInitialProps({ query }) {
     const formDoc = await getForm(query.id);
     const form = formDoc.data();
     const fieldsRef = await form.fields.get();
-    const fields = fieldsRef.data();
-    return { displayName: form.displayName, fields };
+    const fields = Object.values(fieldsRef.data());
+    return { displayName: form.displayName, fields, formID: query.id };
   }
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      fields: this.props.fields,
+      isCreating: false,
+      newFieldName: "",
+      newFieldType: ""
+    };
   }
 
-  handleSaveClick(data) {
-    console.log("data", data);
+  async getFields(docID) {
+    const formDoc = await getForm(docID);
+    const form = formDoc.data();
+    const fieldsRef = await form.fields.get();
+    return Object.values(fieldsRef.data());
   }
 
-  handleEditClick(val) {
-    this.setState({ isEditing: val });
+  async newFieldSubmit() {
+    const newField = {
+      [this.state.newFieldName]: {
+        name: this.state.newFieldName,
+        type: this.state.newFieldType
+      }
+    };
+    try {
+      const dbRes = await setField(this.props.formID, newField);
+
+      const fields = await this.getFields(this.props.formID);
+      console.log(fields);
+
+      this.setState({
+        fields: fields,
+        isCreating: false,
+        newFieldName: "",
+        newFieldType: ""
+      });
+    } catch (error) {
+      throw new Error("There was a problem writing to the database");
+    }
   }
 
-  handleFieldChange(idx, fieldName, value) {
-    let fields = [...this.state.fields];
-    let fieldData = { ...fields[idx], [fieldName]: value };
-    fields[idx] = fieldData;
-    this.setState({ fields });
-  }
+  handleChange = (e, { name, value }) => {
+    this.setState({ [name]: value });
+  };
 
   render() {
-    const fields = Object.values(this.props.fields);
+    // this.setState({ fields: Object.values(this.props.fields) });
+    const fields = this.state.fields;
+    console.log(fields);
     return (
-      <>
+      <Container>
         <Grid centered textAlign="center">
           <Grid.Row only="tablet computer">
             <div className="desktopPadding" />
@@ -54,28 +102,62 @@ class FormBuilder extends React.Component {
               loading={this.state.isCreating}
               size="massive"
               color="black"
-              onClick={() => this.newOrg()}
+              onClick={() => this.setState({ isCreating: true })}
             >
               New Field
             </BasicHoverButton>
           </Grid.Row>
+          <Transition visible={this.state.isCreating} unmountOnHide>
+            <Grid.Row>
+              <Grid.Column>
+                <Segment padded="very">
+                  <Form>
+                    <Form.Group>
+                      <Form.Field>
+                        <label>Field Name</label>
+                        <Input
+                          name="newFieldName"
+                          placeholder="Field Name"
+                          onChange={this.handleChange}
+                        />
+                      </Form.Field>
+                      <Form.Field>
+                        <label>Field Type</label>
+                        <Dropdown
+                          name="newFieldType"
+                          selection
+                          placeholder={"Field Types"}
+                          options={fieldTypes}
+                          onChange={this.handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                    <Form.Button
+                      disabled={
+                        !this.state.newFieldName || !this.state.newFieldType
+                      }
+                      onClick={() => this.newFieldSubmit()}
+                    >
+                      Add New Field
+                    </Form.Button>
+                  </Form>
+                </Segment>
+              </Grid.Column>
+            </Grid.Row>
+          </Transition>
           {fields.map((fieldData, idx) => {
             return (
               <Grid.Row>
                 <FieldEditContainer
-                  {...fieldData}
-                  handleFieldChange={(fieldName, value) =>
-                    this.handleFieldChange(idx, fieldName, value)
-                  }
-                  handleEditClick={val => this.handleEditClick(val)}
-                  handleSaveClick={data => this.handleSaveClick(data)}
+                  fieldData={fieldData}
+                  formID={this.props.formID}
                 />
               </Grid.Row>
             );
           })}
         </Grid>
         <style jsx>{``}</style>
-      </>
+      </Container>
     );
   }
 }

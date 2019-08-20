@@ -3,32 +3,32 @@ import { Input, Message, Transition } from "semantic-ui-react";
 
 const TextInput = props => {
   const [isFocused, setIsFocused] = useState(false);
+
   const handleOnFocus = () => {
-    // onFocus(e)
     setIsFocused(true);
   };
   const handleOnBlur = () => {
-    // onBlur ? onBlur(e) : null
     setIsFocused(false);
   };
 
   const [isChanged, setIsChanged] = useState(false);
   const handleOnChange = e => {
-    props.onChange ? props.onChange(e) : null;
+    props.onChange(e);
     e.target.value ? setIsChanged(true) : setIsChanged(false);
   };
-  console.log("input", props);
+
+  const fieldData = props.fieldData;
   return (
     <>
       {isChanged || props.isEditing ? (
-        <label>{props.label}</label>
+        <label>{fieldData.label}</label>
       ) : (
         <label>&nbsp;</label>
       )}
       <Input
-        label={props.required ? { icon: "asterisk" } : null}
+        label={fieldData.required ? { icon: "asterisk" } : null}
         labelPosition="right corner"
-        placeholder={props.placeholder}
+        placeholder={fieldData.placeholder}
         value={props.value}
         error={props.error}
         onFocus={e => handleOnFocus()}
@@ -36,12 +36,16 @@ const TextInput = props => {
         onChange={e => handleOnChange(e)}
       />
 
-      <Message visible={props.error} negative size="mini">
-        {props.errorText}
-      </Message>
-      <Message visible={props.isEditing} size="mini">
-        {props.helperText}
-      </Message>
+      <Transition visible={props.error || props.isEditing} unmountOnHide>
+        <Message visible negative size="mini">
+          {fieldData.errorText}
+        </Message>
+      </Transition>
+      <Transition visible={isFocused || props.isEditing} unmountOnHide>
+        <Message visible size="mini">
+          {fieldData.helperText}
+        </Message>
+      </Transition>
     </>
   );
 };
