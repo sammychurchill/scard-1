@@ -22,6 +22,7 @@ const FieldEmail = props => {
         error={error}
         value={value}
         type="email"
+        isEditing={false}
       />
     </Form.Field>
   );

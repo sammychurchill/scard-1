@@ -10,38 +10,29 @@ export default function ConfigureEmail(props) {
   const fieldData = props.fieldData;
   return (
     <>
-      <Form.Group unstackable>
-        <Form.Field>
-          <label>Field Name</label>
-          <Form.Input
-            id="name"
-            readOnly={!props.isEditing}
-            placeholder="Name"
-            value={fieldData.name}
-            onChange={e => {
-              props.handleFieldChange("name", e.target.value);
-            }}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>&nbsp;</label>
-          <Transition visible={props.isEditing} duration={1000}>
-            <div>
-              <Button onClick={() => handleSaveClick()} color="green">
-                Save
-              </Button>
-              <Button onClick={() => props.handleEditClick(false)} basic>
-                Cancel
-              </Button>
-            </div>
-          </Transition>
-          {!props.isEditing && (
-            <Button onClick={() => props.handleEditClick(true)} basic>
-              Edit
-            </Button>
-          )}
-        </Form.Field>
-      </Form.Group>
+      <Form.Input
+        width="auto"
+        inline
+        label="Field Name"
+        readOnly={!props.isEditing}
+        placeholder="Name"
+        value={fieldData.name}
+        onChange={e => {
+          props.handleFieldChange("name", e.target.value);
+        }}
+      />
+      <Form.Field>
+        {!props.isEditing && (
+          <Button
+            className="edit"
+            color="black"
+            basic
+            onClick={() => props.handleEditClick(true)}
+          >
+            Edit
+          </Button>
+        )}
+      </Form.Field>
       {props.isEditing && (
         <>
           <Form.Field>
@@ -84,8 +75,21 @@ export default function ConfigureEmail(props) {
               }}
             />
           </Form.Field>
+          <Form.Group inline>
+            <Button onClick={() => handleSaveClick()} color="green">
+              Save
+            </Button>
+            <Button onClick={() => props.handleEditClick(false)} basic>
+              Cancel
+            </Button>
+          </Form.Group>
         </>
       )}
+      <style jsx>{`
+        .edit {
+          background-color: red;
+        }
+      `}</style>
     </>
   );
 }
