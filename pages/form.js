@@ -1,10 +1,8 @@
 import React from "react";
 
+import { loadDB } from "../firebase";
 import getForm from "../utils/getForm";
 import setField from "../utils/setField";
-
-import BasicHoverButton from "../components/BasicHoverButton";
-import FieldEditContainer from "../components/FieldEditContainer";
 
 import "semantic-ui-css/semantic.min.css";
 import {
@@ -13,9 +11,11 @@ import {
   Transition,
   Segment,
   Dropdown,
-  Container,
   Input
 } from "semantic-ui-react";
+
+import { FormEditContainer } from "../components/FormEditContainer";
+import BasicHoverButton from "../components/BasicHoverButton";
 
 const fieldTypes = [
   {
@@ -49,6 +49,21 @@ class FormBuilder extends React.Component {
     };
   }
 
+  async componentDidMount() {
+    const db = await loadDB();
+    this.unsubscribe = await db
+      .firestore()
+      .collection("forms")
+      .doc(this.props.formID)
+      .onSnapshot(snapshot => {
+        console.log("snapshot", snapshot);
+      });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   async getFields(docID) {
     const formDoc = await getForm(docID);
     const form = formDoc.data();
@@ -65,10 +80,7 @@ class FormBuilder extends React.Component {
     };
     try {
       const dbRes = await setField(this.props.formID, newField);
-
       const fields = await this.getFields(this.props.formID);
-      console.log(fields);
-
       this.setState({
         fields: fields,
         isCreating: false,
@@ -80,7 +92,7 @@ class FormBuilder extends React.Component {
     }
   }
 
-  handleChange = (e, { name, value }) => {
+  handleNewFieldChange = (e, { name, value }) => {
     this.setState({ [name]: value });
   };
 
@@ -89,8 +101,8 @@ class FormBuilder extends React.Component {
     const fields = this.state.fields;
     console.log(fields);
     return (
-      <Container>
-        <Grid centered textAlign="center">
+      <>
+        <Grid centered textAlign="center" container>
           <Grid.Row only="tablet computer">
             <div className="desktopPadding" />
           </Grid.Row>
@@ -118,7 +130,7 @@ class FormBuilder extends React.Component {
                         <Input
                           name="newFieldName"
                           placeholder="Field Name"
-                          onChange={this.handleChange}
+                          onChange={this.handleNewFieldChange}
                         />
                       </Form.Field>
                       <Form.Field>
@@ -128,7 +140,7 @@ class FormBuilder extends React.Component {
                           selection
                           placeholder={"Field Types"}
                           options={fieldTypes}
-                          onChange={this.handleChange}
+                          onChange={this.handleNewFieldChange}
                         />
                       </Form.Field>
                     </Form.Group>
@@ -145,19 +157,16 @@ class FormBuilder extends React.Component {
               </Grid.Column>
             </Grid.Row>
           </Transition>
-          {fields.map((fieldData, idx) => {
-            return (
-              <Grid.Row>
-                <FieldEditContainer
-                  fieldData={fieldData}
-                  formID={this.props.formID}
-                />
-              </Grid.Row>
-            );
-          })}
+          <Grid.Row>
+            <FormEditContainer {...this.props} {...this.state} />
+          </Grid.Row>
         </Grid>
-        <style jsx>{``}</style>
-      </Container>
+        <style jsx global>{`
+          body {
+            background-color: #f9fbfd;
+          }
+        `}</style>
+      </>
     );
   }
 }
