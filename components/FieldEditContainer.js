@@ -28,6 +28,7 @@ class FieldEditContainer extends React.Component {
   handleFieldChange(fieldName, value) {
     const fieldData = { ...this.state.fieldData };
     fieldData[fieldName] = value;
+    this.props.updateFields(fieldData);
     this.setState({ fieldData });
   }
 

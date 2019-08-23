@@ -38,11 +38,8 @@ export class FormEditContainer extends Component {
   }
 
   updateFields(idx, field) {
-    const newFields = [
-      ...this.state.fields.splice(0, idx),
-      field,
-      ...this.state.fields.splice(idx)
-    ];
+    const newFields = [...this.state.fields];
+    newFields[idx] = field;
     this.setState({ fields: newFields });
   }
 
@@ -84,7 +81,7 @@ export class FormEditContainer extends Component {
                       field={EditField}
                       fieldData={fieldData}
                       formID={this.props.formID}
-                      e
+                      updateFields={field => this.updateFields(idx, field)}
                     />
                     <br />
                     <br />
