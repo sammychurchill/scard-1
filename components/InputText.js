@@ -18,7 +18,6 @@ const TextInput = props => {
   };
 
   const fieldData = props.fieldData;
-  console.log("input props", props);
   return (
     <>
       {isChanged || props.isEditing ? (

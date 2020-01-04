@@ -10,8 +10,7 @@ class FieldEditContainer extends React.Component {
     super(props);
 
     this.state = {
-      isEditing: false,
-      fieldData: this.props.fieldData
+      isEditing: false
     };
   }
 
@@ -29,7 +28,6 @@ class FieldEditContainer extends React.Component {
     const fieldData = { ...this.state.fieldData };
     fieldData[fieldName] = value;
     this.props.updateFields(fieldData);
-    this.setState({ fieldData });
   }
 
   render() {
@@ -37,7 +35,8 @@ class FieldEditContainer extends React.Component {
     return (
       <Form>
         <EditField
-          {...this.state}
+          {...this.props}
+          isEditing={this.state.isEditing}
           handleFieldChange={(fieldName, value) =>
             this.handleFieldChange(fieldName, value)
           }

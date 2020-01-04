@@ -1,5 +1,5 @@
 import React from "react";
-import App, { Container } from "next/app";
+import App from "next/app";
 
 import ComputerMenu from "../components/Menu";
 import MobileTabletMenu from "../components/MobileMenu";
@@ -20,7 +20,7 @@ class MyApp extends App {
     const { Component, pageProps, router } = this.props;
 
     return (
-      <Container>
+      <>
         {!router.route && (
           <>
             <Responsive maxWidth={852}>
@@ -32,7 +32,7 @@ class MyApp extends App {
           </>
         )}
         <Component {...pageProps} />
-      </Container>
+      </>
     );
   }
 }

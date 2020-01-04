@@ -5,17 +5,11 @@ import getForm from "../utils/getForm";
 import setField from "../utils/setField";
 
 import "semantic-ui-css/semantic.min.css";
-import {
-  Form,
-  Grid,
-  Transition,
-  Segment,
-  Dropdown,
-  Input
-} from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 
 import { FormEditContainer } from "../components/FormEditContainer";
 import BasicHoverButton from "../components/BasicHoverButton";
+import NewFormSegment from "../components/NewFormSegment";
 
 const fieldTypes = [
   {
@@ -43,7 +37,9 @@ class FormBuilder extends React.Component {
     super(props);
     this.state = {
       fields: this.props.fields,
+      isLoading: false,
       isCreating: false,
+      isAnimating: false,
       newFieldName: "",
       newFieldType: ""
     };
@@ -93,13 +89,32 @@ class FormBuilder extends React.Component {
   }
 
   handleNewFieldChange = (e, { name, value }) => {
+    console.log("handleNew", e);
     this.setState({ [name]: value });
   };
 
+  handleAnimationFinish = () => {
+    this.setState({ isAnimating: false });
+  };
+
+  handleCancelClick = () => {
+    this.setState({ isCreating: false });
+    this.setState({ isAnimating: true });
+  };
+
+  handleNewButtonClick = () => {
+    if (this.state.isCreating) {
+      this.newFieldSubmit();
+      this.setState({ isCreating: false });
+      this.setState({ isAnimating: true });
+      return;
+    }
+    this.setState({ isCreating: true });
+    this.setState({ isAnimating: true });
+  };
+
   render() {
-    // this.setState({ fields: Object.values(this.props.fields) });
     const fields = this.state.fields;
-    console.log(fields);
     return (
       <>
         <Grid centered textAlign="center" container>
@@ -107,56 +122,28 @@ class FormBuilder extends React.Component {
             <div className="desktopPadding" />
           </Grid.Row>
           <Grid.Row>
+            <NewFormSegment
+              fieldTypes={fieldTypes}
+              isCreating={this.state.isCreating}
+              onChange={(e, { name, value }) =>
+                this.handleNewFieldChange(e, { name, value })
+              }
+              onCancelClick={() => this.handleCancelClick()}
+            />
+          </Grid.Row>
+          <Grid.Row>
             <BasicHoverButton // Should this create a new row in the database
               // or should it create an empty field that on save creates a new row in the database
               // If it creates an empty field, how does the database client know to update some but create a new one
               basicInverted
-              loading={this.state.isCreating}
+              loading={this.state.isLoading}
               size="massive"
               color="black"
-              onClick={() => this.setState({ isCreating: true })}
+              onClick={() => this.handleNewButtonClick()}
             >
-              New Field
+              {this.state.isCreating ? "Save New Field" : "New Field"}
             </BasicHoverButton>
           </Grid.Row>
-          <Transition visible={this.state.isCreating} unmountOnHide>
-            <Grid.Row>
-              <Grid.Column>
-                <Segment padded="very">
-                  <Form>
-                    <Form.Group>
-                      <Form.Field>
-                        <label>Field Name</label>
-                        <Input
-                          name="newFieldName"
-                          placeholder="Field Name"
-                          onChange={this.handleNewFieldChange}
-                        />
-                      </Form.Field>
-                      <Form.Field>
-                        <label>Field Type</label>
-                        <Dropdown
-                          name="newFieldType"
-                          selection
-                          placeholder={"Field Types"}
-                          options={fieldTypes}
-                          onChange={this.handleNewFieldChange}
-                        />
-                      </Form.Field>
-                    </Form.Group>
-                    <Form.Button
-                      disabled={
-                        !this.state.newFieldName || !this.state.newFieldType
-                      }
-                      onClick={() => this.newFieldSubmit()}
-                    >
-                      Add New Field
-                    </Form.Button>
-                  </Form>
-                </Segment>
-              </Grid.Column>
-            </Grid.Row>
-          </Transition>
           <Grid.Row>
             <FormEditContainer {...this.props} {...this.state} />
           </Grid.Row>
